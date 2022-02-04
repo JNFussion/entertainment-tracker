@@ -12,6 +12,9 @@ module.exports = {
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
+      gridTemplateColumns: {
+        layout: "repeat(auto-fit, minmax(250px,1fr))",
+      },
     },
   },
   plugins: [

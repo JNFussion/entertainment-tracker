@@ -1,0 +1,30 @@
+@keyframes open-horizontal {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes open-vertical {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.open-h {
+  animation-name: open-horizontal;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 50ms;
+}
+
+.open-v {
+  animation-name: open-vertical;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+}
