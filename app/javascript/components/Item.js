@@ -1,14 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function MovieItem({ id, vote_average, poster_path, title, release_date }) {
+function Item({ type, id, vote_average, poster_path, title, release_date }) {
   return (
     <article key={id} id={id} className="p-4 rounded border shadow-lg">
       <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
         {vote_average}
       </p>
       <div className="py-1 border-t border-b">
-        <Link to={`/movies/${id}`}>
+        <Link to={`/${type}/${id}`}>
           <img
             src={`https://image.tmdb.org/t/p/original${poster_path}`}
             alt=""
@@ -16,7 +16,7 @@ function MovieItem({ id, vote_average, poster_path, title, release_date }) {
           />
         </Link>
       </div>
-      <Link to={`/movies/${id}`} className="p-2">
+      <Link to={`/${type}/${id}`} className="p-2">
         <h3 className="font-bold underline">{title}</h3>
         <p>{release_date}</p>
       </Link>
@@ -30,4 +30,4 @@ function MovieItem({ id, vote_average, poster_path, title, release_date }) {
   );
 }
 
-export default MovieItem;
+export default Item;

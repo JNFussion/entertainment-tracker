@@ -5,15 +5,19 @@ import "../../assets/stylesheets/layout.css";
 function Movie(props) {
   const params = useParams();
   const [movie, setMovie] = useState();
+  const [cast, setCast] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/tmdb/show/${params.id}`).then((response) =>
+    fetch(`/api/tmdb/show/movie/${params.id}`).then((response) =>
       response.json().then((data) => setMovie(data))
+    );
+    fetch(`/api/tmdb/cast/movie/${params.id}`).then((response) =>
+      response.json().then((data) => setCast(data))
     );
     return () => {};
   }, []);
 
-  console.log(movie);
+  console.log(cast);
 
   if (movie) {
     return (
@@ -87,10 +91,21 @@ function Movie(props) {
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">
                   <span className="text-gray-600 bg-blue-50">Genres</span>
-                  <div className="flex gap-4">
+                  <div className="flex flex-wrap gap-4">
                     {movie.genres.map((g) => (
                       <span>{g.name}</span>
                     ))}
+                  </div>
+                </li>
+                <li className="grid grid-cols-1-9 gap-12">
+                  <span className="py-4 text-gray-600 bg-blue-50">Cast</span>
+                  <div className="divide-x-2 py-4">
+                    {cast.map((c, index) => {
+                      if (index > 10) {
+                        return;
+                      }
+                      return <span className="px-2">{c.name}</span>;
+                    })}
                   </div>
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">

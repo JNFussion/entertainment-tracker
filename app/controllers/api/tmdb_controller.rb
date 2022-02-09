@@ -2,23 +2,50 @@ class Api::TmdbController < ApplicationController
     Tmdb::Api.key(ENV["TMDB_KEY"])
   
   def popular
-    @movies = Tmdb::Movie.popular
+    if params[:type] == "movie"
+      @media = Tmdb::Movie.popular 
+    else
+      @media = Tmdb::TV.popular 
+    end
+    
     respond_to do |format|
-      format.json {render json: @movies}
+      format.json {render json: @media}
     end
   end
 
   def find
-    @movies = Tmdb::Movie.find(params[:term])
+    if params[:type] == "movie"
+      @media = Tmdb::Movie.find(params[:term])
+    else
+      @media = Tmdb::TV.find(params[:term])
+    end
+
     respond_to do |format|
-      format.json {render json: @movies}
+      format.json {render json: @media}
     end
   end
 
   def show
-    @movie = Tmdb::Movie.detail(params[:id])
+    if params[:type] == "movie"
+      @media = Tmdb::Movie.detail(params[:id])
+    else
+      @media = Tmdb::TV.detail(params[:id])
+    end
+
     respond_to do |format|
-      format.json {render json: @movie}
+      format.json {render json: @media}
+    end
+  end
+
+  def cast
+    if params[:type] == "movie"
+      @cast = Tmdb::Movie.casts(params[:id])
+    else
+      @cast = Tmdb::TV.casts(params[:id])
+    end
+
+    respond_to do |format|
+      format.json {render json: @cast}
     end
   end
 end
