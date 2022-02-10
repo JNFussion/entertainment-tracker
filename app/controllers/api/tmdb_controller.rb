@@ -41,7 +41,7 @@ class Api::TmdbController < ApplicationController
     if params[:type] == "movie"
       @cast = Tmdb::Movie.casts(params[:id])
     else
-      @cast = Tmdb::TV.casts(params[:id])
+      @cast = Tmdb::TV.cast(params[:id])
     end
 
     respond_to do |format|

@@ -2,68 +2,58 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../assets/stylesheets/layout.css";
 
-function Movie(props) {
+function TV(props) {
   const params = useParams();
-  const [movie, setMovie] = useState();
+  const [tv, setTV] = useState();
   const [cast, setCast] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/tmdb/show/movie/${params.id}`).then((response) =>
-      response.json().then((data) => setMovie(data))
+    fetch(`/api/tmdb/show/tv/${params.id}`).then((response) =>
+      response.json().then((data) => setTV(data))
     );
-    fetch(`/api/tmdb/cast/movie/${params.id}`).then((response) =>
+    fetch(`/api/tmdb/cast/tv/${params.id}`).then((response) =>
       response.json().then((data) => setCast(data))
     );
     return () => {};
   }, []);
 
-  if (movie) {
+  if (tv) {
     return (
       <article className="my-20">
         <div className="max-w-7xl mx-auto shadow-lg p-4">
           <header className="flex justify-between my-2">
-            <h2 className="text-4xl font-bold">{movie.title}</h2>
-            <p>{movie.status}</p>
+            <div className="flex gap-4">
+              <h2 className="text-4xl font-bold">{tv.name}</h2>
+              <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
+                {tv.vote_average}
+              </p>
+            </div>
+            <p>{tv.status}</p>
           </header>
 
           <section className="flex gap-10">
             <div className="relative">
               <div className="w-64">
                 <img
-                  src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                  src={`https://image.tmdb.org/t/p/original${tv.poster_path}`}
                   alt=""
                   className=""
                 />
               </div>
-              <p className="absolute right-2 top-2 w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
-                {movie.vote_average}
-              </p>
             </div>
             <div className="my-4">
               <ul>
-                <li className="grid grid-cols-1-9 gap-12">
-                  <span className="text-gray-600 bg-blue-50">IMDB</span>
-                  <span>
-                    <a
-                      href={`https://www.imdb.com/title/${movie.imdb_id}`}
-                      target="_blank"
-                      className="underline text-yellow-900"
-                    >
-                      {movie.imdb_id}
-                    </a>
-                  </span>
-                </li>
                 <li className="grid grid-cols-1-9 gap-12">
                   <span className="pb-4 text-gray-600 bg-blue-50">
                     Homepage
                   </span>
                   <span>
                     <a
-                      href={movie.homepage}
+                      href={tv.homepage}
                       target="_blank"
                       className="underline text-yellow-900"
                     >
-                      {movie.homepage}
+                      {tv.homepage}
                     </a>
                   </span>
                 </li>
@@ -72,25 +62,33 @@ function Movie(props) {
                     Original Title
                   </span>
                   <span className="text-lg font-medium">
-                    {movie.original_title}
+                    {tv.original_name}
                   </span>
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">
+                  <span className="text-gray-600 bg-blue-50">Episodes</span>
+                  <span>{tv.number_of_episodes}</span>
+                </li>
+                <li className="grid grid-cols-1-9 gap-12">
+                  <span className="text-gray-600 bg-blue-50">Seasons</span>
+                  <span>{tv.number_of_seasons}</span>
+                </li>
+                <li className="grid grid-cols-1-9 gap-12">
                   <span className="text-gray-600 bg-blue-50">Release date</span>
-                  <span>{movie.release_date}</span>
+                  <span>{tv.first_air_date}</span>
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">
                   <span className="text-gray-600 bg-blue-50">Country</span>
-                  <span>{movie.production_countries[0].name}</span>
+                  <span>{tv.production_countries[0].name}</span>
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">
                   <span className="text-gray-600 bg-blue-50">Runtime</span>
-                  <span>{movie.runtime} min</span>
+                  <span>{tv.episode_run_time[0]} min per episode</span>
                 </li>
                 <li className="grid grid-cols-1-9 gap-12">
                   <span className="text-gray-600 bg-blue-50">Genres</span>
                   <div className="flex flex-wrap gap-4">
-                    {movie.genres.map((g) => (
+                    {tv.genres.map((g) => (
                       <span>{g.name}</span>
                     ))}
                   </div>
@@ -110,7 +108,7 @@ function Movie(props) {
                   <span className="py-4 text-gray-600 bg-blue-50">
                     Overview
                   </span>
-                  <span className="py-4">{movie.overview}</span>
+                  <span className="py-4">{tv.overview}</span>
                 </li>
               </ul>
             </div>
@@ -127,4 +125,4 @@ function Movie(props) {
   );
 }
 
-export default Movie;
+export default TV;

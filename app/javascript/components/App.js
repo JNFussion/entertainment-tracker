@@ -5,6 +5,7 @@ import Movie from "./Movie";
 import Find from "./Find";
 import Popular from "./Popular";
 import Navbar from "./Navbar";
+import TV from "./TV";
 
 class App extends React.Component {
   render() {
@@ -16,6 +17,7 @@ class App extends React.Component {
           <Route path="/:type/popular" element={<Popular />} />
           <Route path="/:type/find" element={<Find />} />
           <Route path="/movies/:id" element={<Movie />} />
+          <Route path="/tv/:id" element={<TV />} />
         </Routes>
       </BrowserRouter>
     );
