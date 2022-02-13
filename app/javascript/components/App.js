@@ -6,6 +6,7 @@ import Find from "./Find";
 import Popular from "./Popular";
 import Navbar from "./Navbar";
 import TV from "./TV";
+import SignUp from "./SignUp";
 
 class App extends React.Component {
   render() {
@@ -14,6 +15,7 @@ class App extends React.Component {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/Sign-up" element={<SignUp />} />
           <Route path="/:type/popular" element={<Popular />} />
           <Route path="/:type/find" element={<Find />} />
           <Route path="/movies/:id" element={<Movie />} />
