@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdLocalMovies,
   MdMenu,
@@ -12,9 +12,12 @@ import { FaGamepad } from "react-icons/fa";
 import { ImStatsBars } from "react-icons/im";
 import NavListItem from "./NavListItem";
 import "../../assets/stylesheets/Navbar.css";
+import AvatarBtn from "./AvatarBtn";
+import { Link } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ currentUser }) {
   const [isOpen, setIsOpen] = useState(false);
+
   if (isOpen) {
     return (
       <nav
@@ -107,6 +110,20 @@ function Navbar() {
         <MdMenu />
       </button>
       <h2 className="text-bold text-xl">Entertainment tracker</h2>
+      <div className="ml-auto">
+        {currentUser ? (
+          <AvatarBtn currentUser={currentUser} />
+        ) : (
+          <div className="flex gap-4">
+            <Link to="/login" className="px-2 rounded hover:bg-gray-700">
+              Login
+            </Link>
+            <Link to="/sign-up" className="px-2 rounded hover:bg-gray-700">
+              Sign Up
+            </Link>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

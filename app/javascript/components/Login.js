@@ -2,32 +2,24 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import {
   getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-function SignUp() {
-  const [username, setUsername] = useState("");
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   let navigate = useNavigate();
-
   function handleSubmit(e) {
     e.preventDefault();
-    createUserWithEmailAndPassword(getAuth(), email, password).then(
-      ({ user }) => {
-        updateProfile(user, {
-          displayName: username,
-        }).then(() => {
-          navigate("/");
-        });
-      }
-    );
+    signInWithEmailAndPassword(getAuth(), email, password).then(() => {
+      navigate("/");
+    });
   }
+
   function signInWithGoogle() {
     signInWithPopup(getAuth(), new GoogleAuthProvider()).then(() => {
       navigate("/");
@@ -39,7 +31,7 @@ function SignUp() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create a new account
+            Sign in to your account
           </h2>
           <div className="mt-2 text-center text-sm text-gray-600">
             Or
@@ -52,7 +44,7 @@ function SignUp() {
                 <span className="text-lg">
                   <FcGoogle />
                 </span>
-                <span>Sign up with Google</span>
+                <span>Sign in with Google</span>
               </button>
             </div>
           </div>
@@ -65,22 +57,7 @@ function SignUp() {
         >
           <div className="grid gap-4 rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="username" className="font-medium text-sm">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="email-address" className="font-medium text-sm">
+              <label htmlFor="email-address" className="sr-only">
                 Email address
               </label>
               <input
@@ -95,7 +72,7 @@ function SignUp() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="font-medium text-sm">
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
@@ -131,7 +108,7 @@ function SignUp() {
                   />
                 </svg>
               </span>
-              Sign up
+              Sign in
             </button>
           </div>
         </form>
@@ -140,4 +117,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;
