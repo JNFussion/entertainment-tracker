@@ -1,7 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { UserContext } from "./App";
+import StateDropdown from "./StateDropdown";
 
-function Item({ type, id, vote_average, poster_path, title, release_date }) {
+function Item({
+  type,
+  id,
+  vote_average,
+  poster_path,
+  title,
+  release_date,
+  state,
+  setter,
+}) {
+  const currentUser = useContext(UserContext);
+  const location = useLocation();
+
+  const bordersColors = {
+    NotWatched: "border border-gray-300",
+    plan_to_watch: "border border-blue-500",
+    watched: "border border-green-500",
+    abandoned: "border border-red-500",
+  };
+
+  function setMonitoring() {
+    const token = document.getElementsByName("csrf-token")[0].content;
+    if (currentUser) {
+      fetch("/api/monitoring/movies", {
+        method: "POST",
+        body: JSON.stringify({
+          movie: {
+            tmdb_id: id,
+            monitoring: true,
+            state: 0,
+            uid: currentUser.uid,
+          },
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": token,
+        },
+      });
+    }
+  }
+
   return (
     <article key={id} id={id} className="p-4 rounded border shadow-lg">
       <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
@@ -20,12 +62,20 @@ function Item({ type, id, vote_average, poster_path, title, release_date }) {
         <h3 className="font-bold underline">{title}</h3>
         <p>{release_date}</p>
       </Link>
-      <button
-        type="button"
-        className="block ml-auto py-1 px-2 rounded-md shadow border border-black text-white bg-blue-800"
-      >
-        Monitor
-      </button>
+      {!location.pathname.startsWith("/monitoring") ? (
+        <button
+          type="button"
+          className="block ml-auto py-1 px-2 rounded-md shadow border border-black text-white bg-blue-800"
+          onClick={setMonitoring}
+        >
+          Monitor
+        </button>
+      ) : (
+        <React.Fragment>
+          <StateDropdown id={id} state={state} setter={setter} />
+          <div className={bordersColors[state]} />
+        </React.Fragment>
+      )}
     </article>
   );
 }

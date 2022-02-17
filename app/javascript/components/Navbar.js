@@ -42,16 +42,16 @@ function Navbar({ currentUser }) {
               "Movies",
               <MdLocalMovies />,
               [
-                ["Monitoring", <MdRemoveRedEye />, "/movies/monitoring"],
-                ["Stats", <ImStatsBars />, "/movies/stats"],
+                ["Monitoring", <MdRemoveRedEye />, "/monitoring/movies"],
+                ["Stats", <ImStatsBars />, "/stats/movies"],
               ],
             ],
             [
               "Tv Shows",
               <MdTv />,
               [
-                ["Monitoring", <MdRemoveRedEye />, "/tv-shows/monitoring"],
-                ["Stats", <ImStatsBars />, "/tv-shows/stats"],
+                ["Monitoring", <MdRemoveRedEye />, "/monitoring/tv-shows"],
+                ["Stats", <ImStatsBars />, "/stats/tv-shows"],
               ],
             ],
             [
@@ -101,7 +101,7 @@ function Navbar({ currentUser }) {
     );
   }
   return (
-    <nav className="open-h fixed top-0 w-full flex gap-4 p-4 text-white bg-gray-800 transition-all duration-300 ease-in">
+    <nav className="z-10 open-h fixed top-0 w-full flex gap-4 p-4 text-white bg-gray-800 transition-all duration-300 ease-in">
       <button
         type="button"
         className="text-lg p-1 rounded hover:bg-gray-600"

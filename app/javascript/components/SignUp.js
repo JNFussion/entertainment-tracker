@@ -23,7 +23,18 @@ function SignUp() {
         updateProfile(user, {
           displayName: username,
         }).then(() => {
-          navigate("/");
+          const token = document.getElementsByName("csrf-token")[0].content;
+
+          fetch("/api/user", {
+            method: "POST",
+            body: JSON.stringify({ user: { uid: user.uid } }),
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": token,
+            },
+          }).then(() => {
+            navigate("/");
+          });
         });
       }
     );

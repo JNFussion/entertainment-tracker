@@ -4,9 +4,14 @@ Rails.application.routes.draw do
     get '/tmdb/:type/find', to: 'tmdb#find'
     get '/tmdb/show/:type/:id', to: 'tmdb#show'
     get '/tmdb/cast/:type/:id', to: 'tmdb#cast'
-    get 'movies/index'
-    get 'movies/show'
+    get 'tmdb/similar/movie/:id', to: 'tmdb#similar'
+    namespace :monitoring do
+      resources :movies
+    end
+    resources :user
   end
+
+
 
   root 'static#index'
   get '/*path', to: 'static#index'

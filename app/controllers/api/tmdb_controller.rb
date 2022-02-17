@@ -48,4 +48,12 @@ class Api::TmdbController < ApplicationController
       format.json {render json: @cast}
     end
   end
+
+  def similar
+    @similar = Tmdb::Movie.similar_movies(params[:id])
+
+    respond_to do |format|
+      format.json {render json: @similar}
+    end
+  end
 end

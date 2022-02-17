@@ -9,6 +9,9 @@ import TV from "./TV";
 import SignUp from "./SignUp";
 import Login from "./Login";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Monitoring from "./Monitoring";
+
+export const UserContext = React.createContext();
 
 class App extends React.Component {
   constructor(props) {
@@ -37,21 +40,22 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.currentUser);
-
     return (
-      <BrowserRouter>
-        <Navbar currentUser={this.state.currentUser} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/:type/popular" element={<Popular />} />
-          <Route path="/:type/find" element={<Find />} />
-          <Route path="/movies/:id" element={<Movie />} />
-          <Route path="/tv/:id" element={<TV />} />
-        </Routes>
-      </BrowserRouter>
+      <UserContext.Provider value={this.state.currentUser}>
+        <BrowserRouter>
+          <Navbar currentUser={this.state.currentUser} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/:type/popular" element={<Popular />} />
+            <Route path="/:type/find" element={<Find />} />
+            <Route path="/monitoring/:type" element={<Monitoring />} />
+            <Route path="/movies/:id" element={<Movie />} />
+            <Route path="/tv/:id" element={<TV />} />
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
     );
   }
 }

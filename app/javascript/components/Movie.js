@@ -1,11 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../assets/stylesheets/layout.css";
+import { UserContext } from "./App";
+import Item from "./Item";
 
 function Movie(props) {
   const params = useParams();
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState([]);
+  const [similar, setSimilar] = useState();
+  const [monitoring, setMonitoring] = useState();
+  const currentUser = useContext(UserContext);
+
+  const bordersColors = {
+    NotWatched: "border border-gray-300",
+    plan_to_watch: "border border-blue-500",
+    watched: "border border-green-500",
+    abandoned: "border border-red-500",
+  };
 
   useEffect(() => {
     fetch(`/api/tmdb/show/movie/${params.id}`).then((response) =>
@@ -14,8 +27,22 @@ function Movie(props) {
     fetch(`/api/tmdb/cast/movie/${params.id}`).then((response) =>
       response.json().then((data) => setCast(data))
     );
+    fetch(`/api/tmdb/similar/movie/${params.id}`).then((response) =>
+      response.json().then((data) => setSimilar(data))
+    );
     return () => {};
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetch(`/api/monitoring/movies/${params.id}?uid=${currentUser.uid}`).then(
+        (response) => response.json().then((data) => setMonitoring(data))
+      );
+    }
+    return () => {};
+  }, [currentUser]);
+
+  console.log(similar);
 
   if (movie) {
     return (
@@ -113,6 +140,43 @@ function Movie(props) {
                   <span className="py-4">{movie.overview}</span>
                 </li>
               </ul>
+            </div>
+          </section>
+        </div>
+        <div className="max-w-7xl grid mx-auto my-4">
+          {monitoring && (
+            <section
+              className={` shadow-lg p-4 ${bordersColors[monitoring.state]}`}
+            >
+              <h3 className="mb-4 font-bold text-lg">State</h3>
+              <div className="flex items-center justify-around">
+                <p className="flex gap-4">
+                  <span className="font-medium">Date:</span>
+                  <span>
+                    {format(new Date(`${monitoring.updated_at}`), "dd/MMM/yy")}
+                  </span>
+                </p>
+                <p className="text-xl">{monitoring.state}</p>
+              </div>
+            </section>
+          )}
+
+          <section className="shadow-lg p-4">
+            <h3 className="font-bold text-lg">Similar</h3>
+            <div id="similar-container" className="grid grid-layout gap-4">
+              {similar &&
+                similar.map(
+                  ({ id, title, release_date, vote_average, poster_path }) => (
+                    <Item
+                      type="movies"
+                      id={id}
+                      title={title}
+                      release_date={release_date}
+                      vote_average={vote_average}
+                      poster_path={poster_path}
+                    />
+                  )
+                )}
             </div>
           </section>
         </div>
