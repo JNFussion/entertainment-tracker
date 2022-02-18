@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { UserContext } from "./App";
@@ -83,6 +83,23 @@ function Item({
     }
   }
 
+  const [mediaItem, setMediaItem] = useState();
+
+  useEffect(() => {
+    if (currentUser) {
+      let url = "";
+      if (params.type === "movies") {
+        url = `/api/monitoring/movies/${id}?uid=${currentUser.uid}`;
+      } else {
+        url = `/api/monitoring/tv/${id}?uid=${currentUser.uid}`;
+      }
+      fetch(url).then((response) =>
+        response.json().then((data) => setMediaItem(data))
+      );
+    }
+    return () => {};
+  }, [currentUser]);
+
   return (
     <article key={id} id={id} className="p-4 rounded border shadow-lg">
       <div className="flex items-center justify-between">
@@ -114,13 +131,15 @@ function Item({
         <p>{release_date}</p>
       </Link>
       {!location.pathname.startsWith("/monitoring") ? (
-        <button
-          type="button"
-          className="block ml-auto py-1 px-2 rounded-md shadow border border-black text-white bg-blue-800"
-          onClick={setMonitoring}
-        >
-          Monitor
-        </button>
+        !mediaItem && (
+          <button
+            type="button"
+            className="block ml-auto py-1 px-2 rounded-md shadow border border-black text-white bg-blue-800"
+            onClick={setMonitoring}
+          >
+            Monitor
+          </button>
+        )
       ) : (
         <React.Fragment>
           <StateDropdown id={id} state={state} setter={setter} />
