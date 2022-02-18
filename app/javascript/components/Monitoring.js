@@ -40,20 +40,16 @@ function Monitoring() {
 
   useEffect(() => {
     if (monitoring.length !== 0) {
-      const dataList = [];
-      let url = "";
-      monitoring.forEach(({ tmdb_id }) => {
-        if (params.type === "movies") {
-          url = `/api/tmdb/show/movie/${tmdb_id}`;
-        } else {
-          url = `/api/tmdb/show/tv/${tmdb_id}`;
-        }
-        fetch(url).then((response) =>
-          response
-            .json()
-            .then((data) => dataList.push(data))
-            .then(() => setMedia(dataList))
-        );
+      Promise.all(
+        monitoring.map(({ tmdb_id }) =>
+          fetch(
+            params.type === "movies"
+              ? `/api/tmdb/show/movie/${tmdb_id}`
+              : `/api/tmdb/show/tv/${tmdb_id}`
+          ).then((resp) => resp.json())
+        )
+      ).then((data) => {
+        setMedia(data);
       });
     }
     return () => {};
