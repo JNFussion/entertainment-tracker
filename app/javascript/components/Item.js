@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { UserContext } from "./App";
 import StateDropdown from "./StateDropdown";
 
@@ -15,7 +15,7 @@ function Item({
 }) {
   const currentUser = useContext(UserContext);
   const location = useLocation();
-
+  const params = useParams();
   const bordersColors = {
     NotWatched: "border border-gray-300",
     plan_to_watch: "border border-blue-500",
@@ -26,16 +26,33 @@ function Item({
   function setMonitoring() {
     const token = document.getElementsByName("csrf-token")[0].content;
     if (currentUser) {
-      fetch("/api/monitoring/movies", {
-        method: "POST",
-        body: JSON.stringify({
+      let url = "";
+      let data;
+      if (params.type === "movie") {
+        url = "/api/monitoring/movies";
+        data = {
           movie: {
             tmdb_id: id,
             monitoring: true,
             state: 0,
             uid: currentUser.uid,
           },
-        }),
+        };
+      } else {
+        url = "/api/monitoring/tv";
+        data = {
+          tv: {
+            tmdb_id: id,
+            monitoring: true,
+            state: 0,
+            uid: currentUser.uid,
+          },
+        };
+      }
+
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-Token": token,

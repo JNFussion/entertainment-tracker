@@ -11,6 +11,10 @@ import Login from "./Login";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Monitoring from "./Monitoring";
 
+export function pretty(str) {
+  return str.split("_").join(" ");
+}
+
 export const UserContext = React.createContext();
 
 class App extends React.Component {

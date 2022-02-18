@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     get 'tmdb/similar/movie/:id', to: 'tmdb#similar'
     namespace :monitoring do
       resources :movies
+      resources :tv
     end
     resources :user
   end

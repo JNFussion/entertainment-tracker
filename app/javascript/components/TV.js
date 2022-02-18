@@ -1,11 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../assets/stylesheets/layout.css";
+import { pretty, UserContext } from "./App";
+import StateDropdown from "./StateDropdown";
 
 function TV(props) {
   const params = useParams();
   const [tv, setTV] = useState();
   const [cast, setCast] = useState([]);
+  const [refresher, setRefresher] = useState();
+  const [monitoring, setMonitoring] = useState();
+  const currentUser = useContext(UserContext);
+
+  const bordersColors = {
+    NotWatched: "border border-gray-300",
+    plan_to_watch: "border border-blue-500",
+    watched: "border border-green-500",
+    abandoned: "border border-red-500",
+  };
 
   useEffect(() => {
     fetch(`/api/tmdb/show/tv/${params.id}`).then((response) =>
@@ -17,18 +30,37 @@ function TV(props) {
     return () => {};
   }, []);
 
-  if (tv) {
+  useEffect(() => {
+    if (currentUser) {
+      fetch(`/api/monitoring/tv/${params.id}?uid=${currentUser.uid}`).then(
+        (response) => response.json().then((data) => setMonitoring(data))
+      );
+    }
+    return () => {};
+  }, [currentUser, refresher]);
+
+  if (tv && monitoring) {
     return (
       <article className="my-20">
         <div className="max-w-7xl mx-auto shadow-lg p-4">
           <header className="flex justify-between my-2">
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4">
               <h2 className="text-4xl font-bold">{tv.name}</h2>
+
               <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
                 {tv.vote_average}
               </p>
             </div>
-            <p>{tv.status}</p>
+            <div className="flex items-center gap-4">
+              {monitoring && (
+                <StateDropdown
+                  id={monitoring.tmdb_id}
+                  state={monitoring.state}
+                  setter={setRefresher}
+                />
+              )}
+              <p>{tv.status}</p>
+            </div>
           </header>
 
           <section className="flex gap-10">
@@ -114,6 +146,24 @@ function TV(props) {
             </div>
           </section>
         </div>
+        {monitoring && (
+          <section
+            className={`max-w-7xl grid mx-auto my-4 p-4 rounded shadow-lg ${
+              bordersColors[monitoring.state]
+            }`}
+          >
+            <h3 className="mb-4 font-bold text-lg">State</h3>
+            <div className="flex items-center justify-around">
+              <p className="flex gap-4">
+                <span className="font-medium">Date:</span>
+                <span>
+                  {format(new Date(`${monitoring.updated_at}`), "dd/MMM/yy")}
+                </span>
+              </p>
+              <p className="text-xl capitalize">{pretty(monitoring.state)}</p>
+            </div>
+          </section>
+        )}
       </article>
     );
   }

@@ -28,7 +28,10 @@ function Monitoring() {
           setMonitoring
         );
       } else {
-        getMonitoring("/api/monitoring/tv", setMonitoring);
+        getMonitoring(
+          `/api/monitoring/tv?uid=${currentUser.uid}`,
+          setMonitoring
+        );
       }
     }
 
@@ -38,8 +41,14 @@ function Monitoring() {
   useEffect(() => {
     if (monitoring.length !== 0) {
       const dataList = [];
+      let url = "";
       monitoring.forEach(({ tmdb_id }) => {
-        fetch(`/api/tmdb/show/movie/${tmdb_id}`).then((response) =>
+        if (params.type === "movies") {
+          url = `/api/tmdb/show/movie/${tmdb_id}`;
+        } else {
+          url = `/api/tmdb/show/tv/${tmdb_id}`;
+        }
+        fetch(url).then((response) =>
           response
             .json()
             .then((data) => dataList.push(data))
@@ -47,7 +56,6 @@ function Monitoring() {
         );
       });
     }
-
     return () => {};
   }, [monitoring]);
 
@@ -85,6 +93,8 @@ function Monitoring() {
                   release_date={first_air_date}
                   vote_average={vote_average}
                   poster_path={poster_path}
+                  state={findState(monitoring, id)}
+                  setter={setRefresher}
                 />
               )
             )

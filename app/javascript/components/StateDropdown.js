@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
+import { useParams } from "react-router-dom";
 import { UserContext } from "./App";
 
 function StateDropdown({ id, state, setter }) {
   const [show, setShow] = useState();
   const currentUser = useContext(UserContext);
+  const params = useParams();
 
   const stateValues = {
     NotWatched: 0,
@@ -15,13 +17,27 @@ function StateDropdown({ id, state, setter }) {
   function update(stateToUpdate) {
     const token = document.getElementsByName("csrf-token")[0].content;
     if (currentUser) {
-      fetch(`/api/monitoring/movies/${id}?uid=${currentUser.uid}`, {
-        method: "PUT",
-        body: JSON.stringify({
+      let url = "";
+      let data;
+      if (params.type === "movies") {
+        url = `/api/monitoring/movies/${id}?uid=${currentUser.uid}`;
+        data = {
           movie: {
             state: stateValues[stateToUpdate],
           },
-        }),
+        };
+      } else {
+        url = `/api/monitoring/tv/${id}?uid=${currentUser.uid}`;
+        data = {
+          tv: {
+            state: stateValues[stateToUpdate],
+          },
+        };
+      }
+
+      fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-Token": token,

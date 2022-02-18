@@ -2,14 +2,16 @@ import { format } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../assets/stylesheets/layout.css";
-import { UserContext } from "./App";
+import { pretty, UserContext } from "./App";
 import Item from "./Item";
+import StateDropdown from "./StateDropdown";
 
 function Movie(props) {
   const params = useParams();
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState([]);
   const [similar, setSimilar] = useState();
+  const [refresher, setRefresher] = useState();
   const [monitoring, setMonitoring] = useState();
   const currentUser = useContext(UserContext);
 
@@ -40,9 +42,7 @@ function Movie(props) {
       );
     }
     return () => {};
-  }, [currentUser]);
-
-  console.log(similar);
+  }, [currentUser, refresher]);
 
   if (movie) {
     return (
@@ -50,7 +50,16 @@ function Movie(props) {
         <div className="max-w-7xl mx-auto shadow-lg p-4">
           <header className="flex justify-between my-2">
             <h2 className="text-4xl font-bold">{movie.title}</h2>
-            <p>{movie.status}</p>
+            <div className="flex items-center gap-4">
+              {monitoring && (
+                <StateDropdown
+                  id={monitoring.imdb_id}
+                  state={monitoring.state}
+                  setter={setRefresher}
+                />
+              )}
+              <p>{movie.status}</p>
+            </div>
           </header>
 
           <section className="flex gap-10">
@@ -156,7 +165,7 @@ function Movie(props) {
                     {format(new Date(`${monitoring.updated_at}`), "dd/MMM/yy")}
                   </span>
                 </p>
-                <p className="text-xl">{monitoring.state}</p>
+                <p className="text-xl capitalize">{pretty(monitoring.state)}</p>
               </div>
             </section>
           )}
