@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { UserContext } from "./App";
 import StateDropdown from "./StateDropdown";
@@ -28,7 +29,7 @@ function Item({
     if (currentUser) {
       let url = "";
       let data;
-      if (params.type === "movie") {
+      if (params.type === "movies") {
         url = "/api/monitoring/movies";
         data = {
           movie: {
@@ -61,11 +62,44 @@ function Item({
     }
   }
 
+  function deleteMonitoring() {
+    if (confirm("Are you sure?")) {
+      const token = document.getElementsByName("csrf-token")[0].content;
+      if (currentUser) {
+        let url = "";
+        if (params.type === "movies") {
+          url = `/api/monitoring/movies/${id}?uid=${currentUser.uid}`;
+        } else {
+          url = `/api/monitoring/tv/${id}?uid=${currentUser.uid}`;
+        }
+        fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token,
+          },
+        }).then(() => setter((prevState) => !prevState));
+      }
+    }
+  }
+
   return (
     <article key={id} id={id} className="p-4 rounded border shadow-lg">
-      <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
-        {vote_average}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="w-min p-2 my-1 rounded font-black shadow-lg bg-yellow-500">
+          {vote_average}
+        </p>
+        {location.pathname.startsWith("/monitoring") && (
+          <div>
+            <button
+              className="opacity-50 hover:opacity-100"
+              onClick={deleteMonitoring}
+            >
+              <FaTrashAlt />
+            </button>
+          </div>
+        )}
+      </div>
       <div className="py-1 border-t border-b">
         <Link to={`/${type}/${id}`}>
           <img

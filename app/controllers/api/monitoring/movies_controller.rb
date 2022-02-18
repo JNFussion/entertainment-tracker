@@ -28,6 +28,12 @@ class Api::Monitoring::MoviesController < ApplicationController
     @movie.update(movie_params)
   end
 
+  def destroy
+    @user = User.find_by uid: params[:uid]
+    @movie = @user.movies.where(tmdb_id: params[:id])
+    @movie[0].destroy
+  end
+
   private
     def movie_params
       params.require(:movie).permit(:tmdb_id, :monitoring, :state)
